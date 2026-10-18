@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Text Sticker Studio</title>
+
+<style>
+
+body {
+
+  font-family: Arial, sans-serif;
+
+  background: #111827;
+
+  color: white;
+
+  padding: 20px;
+
+}
+
+h1 { text-align: center; }
+
+textarea {
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  height: 100px;
+
+  padding: 12px;
+
+  font-size: 18px;
+
+  border-radius: 10px;
+
+}
+
+.controls {
+
+  background: #243047;
+
+  padding: 15px;
+
+  border-radius: 12px;
+
+  margin-top: 15px;
+
+}
+
+button, select, input {
+
+  padding: 10px;
+
+  margin: 5px 0;
+
+  border-radius: 8px;
+
+}
+
+button {
+
+  background: #6366f1;
+
+  color: white;
+
+  border: none;
+
+}
+
+#preview {
+
+  background: white;
+
+  color: black;
+
+  padding: 20px;
+
+  margin-top: 20px;
+
+  border-radius: 10px;
+
+  min-height: 60px;
+
+  white-space: pre-wrap;
+
+  overflow-wrap: anywhere;
+
+  font-size: 22px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Text Sticker Studio</h1>
+
+<p>Customize your words. Create your style.</p>
+
+<textarea id="message"
+
+placeholder="Type your message here..."></textarea>
+
+<div class="controls">
+
+<p>Select a word in the preview to style it.</p>
+
+<label>Text Color</label><br>
+
+<input type="color" id="color" value="#ff1493">
+
+<br>
+
+<label>Highlight Color</label><br>
+
+<input type="color" id="highlight" value="#ffff00">
+
+<button onclick="highlightWord()">Highlight</button>
+
+<br>
+
+<label>Font</label><br>
+
+<select id="font">
+
+<option value="Arial">Arial</option>
+
+<option value="Georgia">Georgia</option>
+
+<option value="cursive">Cursive</option>
+
+<option value="fantasy">Fantasy</option>
+
+<option value="monospace">Monospace</option>
+
+</select>
+
+<br>
+
+<label>Font Size</label><br>
+
+<input type="range" id="size"
+
+min="12" max="60" value="22">
+
+<br>
+
+<button onclick="styleWord()">Apply Style</button>
+
+<button onclick="makeSticker()">Create Sticker</button>
+
+</div>
+
+<h3>Message Preview</h3>
+
+<div id="preview"></div>
+
+<script>
+
+const message = document.getElementById("message");
+
+const preview = document.getElementById("preview");
+
+message.addEventListener("input", () => {
+
+  preview.textContent = message.value;
+
+});
+
+function selection() {
+
+  const s = window.getSelection();
+
+  if (!s.rangeCount || s.isCollapsed) return null;
+
+  const range = s.getRangeAt(0);
+
+  if (!preview.contains(range.commonAncestorContainer))
+
+    return null;
+
+  return range;
+
+}
+
+function wrapSelected(styles) {
+
+  const range = selection();
+
+  if (!range) {
+
+    alert("Select a word in the preview first.");
+
+    return;
+
+  }
+
+  const span = document.createElement("span");
+
+  Object.assign(span.style, styles);
+
+  span.appendChild(range.extractContents());
+
+  range.insertNode(span);
+
+  window.getSelection().removeAllRanges();
+
+}
+
+function styleWord() {
+
+  wrapSelected({
+
+    color: document.getElementById("color").value,
+
+    fontFamily: document.getElementById("font").value,
+
+    fontSize: document.getElementById("size").value + "px"
+
+  });
+
+}
+
+function highlightWord() {
+
+ 
